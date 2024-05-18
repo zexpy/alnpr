@@ -1,0 +1,6 @@
+path: /home/zephyr/Desktop/.code/college/alpr/datasets/data
+train: images
+val: images
+
+names:
+  0: number_plate
