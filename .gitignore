@@ -4,3 +4,4 @@ images/
 backend/__pycache__
 node_modules/
 backend/result
+.ipynb_checkpoints/
