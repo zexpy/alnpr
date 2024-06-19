@@ -32,7 +32,7 @@ async def create_upload_file(file: UploadFile):
     
     # Use YOLO model to make a prediction and save the results
 
-    res = model.predict(source=img, project='result', name='yolov8', save=True)[0]
+    res = model.predict(source=img, project='result', name='yolov8', save=True, save_crop=True)[0]
     return {"url": res.save_dir, "path": res.path}
     
 
