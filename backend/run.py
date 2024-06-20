@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
 app.mount('/result', StaticFiles(directory='result'), 'result')
-model = YOLO('/home/zephyr/Desktop/.code/college/alpr/results/yolov82/weights/best.pt')
+model = YOLO('/home/zephyr/Desktop/.code/college/alnpr/results/yolov82/weights/best.pt')
 
 
 app.add_middleware(
