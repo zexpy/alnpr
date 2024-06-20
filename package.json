@@ -1,16 +1,16 @@
 {
-  "name": "alpr",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:zexpy/alpr.git",
-  "author": "morphhyy <imbibek05@gmail.com>",
-  "license": "MIT",
-  "scripts": {
-    "dev": "source .venv/bin/activate && concurrently \"npm run server\" \"npm run client\"",
-    "server": "cd backend && fastapi dev run.py",
-    "client": "cd frontend && yarn dev"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
-  }
+    "name": "alnpr",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "git@github.com:zexpy/alnpr.git",
+    "author": "morphhyy <imbibek05@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "dev": "source .venv/bin/activate && concurrently \"npm run server\" \"npm run client\"",
+        "server": "cd backend && fastapi dev run.py",
+        "client": "cd frontend && yarn dev"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
 }
