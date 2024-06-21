@@ -1,16 +1,18 @@
 {
-    "name": "alnpr",
-    "version": "1.0.0",
-    "main": "index.js",
-    "repository": "git@github.com:zexpy/alnpr.git",
-    "author": "morphhyy <imbibek05@gmail.com>",
-    "license": "MIT",
-    "scripts": {
-        "dev": "source .venv/bin/activate && concurrently \"npm run server\" \"npm run client\"",
-        "server": "cd backend && fastapi dev run.py",
-        "client": "cd frontend && yarn dev"
-    },
-    "devDependencies": {
-        "concurrently": "^8.2.2"
-    }
+  "name": "alnpr",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:zexpy/alnpr.git",
+  "author": "morphhyy <imbibek05@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "install:both": "yarn && cd frontend && yarn  && cd ../backend && pip install -r requirements.txt",
+    "dev": "source .venv/bin/activate && concurrently \"yarn start:server\" \"yarn start:client\"",
+    "start:server": "cd backend && fastapi dev run.py",
+    "start:client": "cd frontend && yarn dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.5.2"
+  }
 }
