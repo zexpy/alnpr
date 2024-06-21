@@ -1,18 +1,12 @@
-from fastapi import FastAPI, UploadFile
-from ultralytics import YOLO
-import numpy as np
-import cv2
+from fastapi import FastAPI, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-import os
+from utils.uploads import upload_image, upload_video
 
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
 
 app = FastAPI()
 
 app.mount('/result', StaticFiles(directory='result'), 'result')
-model = YOLO(f"{dir_path}/output/yolov82/weights/best.pt")
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,18 +16,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/image")
-async def create_upload_file(file: UploadFile):
-    contents = await file.read()
-    
-    nparr = np.frombuffer(contents, np.uint8)
-    
-    # Decode the numpy array into an image
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    
-    # Use YOLO model to make a prediction and save the results
 
-    res = model.predict(source=img, project='result', name='yolov8', save=True, save_crop=True)[0]
-    return {"url": res.save_dir, "path": res.path}
-    
+@app.post("/uploads")
+async def create_check(file: UploadFile, _: Request):
+    if file.content_type is None:
+        return
+
+    path = file.content_type.split("/")[0]
+    if path == 'image':
+        return await upload_image(file)
+    else:
+        return await upload_video(file)
+
+
+
+
+
+
 

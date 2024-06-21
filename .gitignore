@@ -1,6 +1,5 @@
 datasets/data
 .venv/
-images/
 backend/__pycache__
 node_modules/
 backend/result
