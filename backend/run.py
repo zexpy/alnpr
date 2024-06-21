@@ -4,14 +4,15 @@ import numpy as np
 import cv2
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+import os
 
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 app = FastAPI()
 
 app.mount('/result', StaticFiles(directory='result'), 'result')
-model = YOLO('/home/zephyr/Desktop/.code/college/alnpr/results/yolov82/weights/best.pt')
-
+model = YOLO(f"{dir_path}/output/yolov82/weights/best.pt")
 
 app.add_middleware(
     CORSMiddleware,
