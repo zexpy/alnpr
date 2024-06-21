@@ -15,7 +15,6 @@ This ALNPR includes the following packages/apps:
 3. Get `.env` file from @morphhyy
 4. Make virtual environment (`python -m venv .venv`)
 5. Activate virtual environment (`source .venv/bin/activate`)
-6. Install python dependencies (`pip install -r backend/requirements.txt`)
-7. Run web app (`yarn start:client`)
-8. Run server (`yarn start:server`)
-9. Run both (`yarn dev`)
+6. Run web app (`yarn start:client`)
+7. Run server (`yarn start:server`)
+8. Run both (`yarn dev`)
