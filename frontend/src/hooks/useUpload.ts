@@ -1,6 +1,13 @@
 import { useState } from "react";
 import toast from "react-hot-toast/headless";
 
+type ResultResponse = {
+  url: string;
+  path: string;
+  conf: string;
+  cords: string;
+  error: boolean;
+};
 export function useUpload() {
   const [status, setStatus] = useState({ error: false, loading: false });
   const [file, setFile] = useState<File>();
@@ -17,8 +24,7 @@ export function useUpload() {
           body: formData,
         },
       );
-      const data: { url: string; path: string; error: boolean } =
-        await response.json();
+      const data: ResultResponse = await response.json();
 
       if (data.error) {
         toast.error("Not Detected Number Plate");
@@ -29,6 +35,8 @@ export function useUpload() {
         crop: `${import.meta.env.VITE_BACKEND_URL}/${
           data.url
         }/crops/number_plate/${data.path}`,
+        conf: data.conf,
+        cords: data.cords,
       };
     } catch (error) {
       setStatus((prev) => ({ ...prev, error: true }));

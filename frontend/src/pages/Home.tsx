@@ -11,26 +11,25 @@ const Home = () => {
       title: "Try it out",
       description:
         "Our algo handles plates that are blurry, dark, angled, and much more!",
-      iconColor: "#3572EF",
-      icon: SiPivotaltracker,
+      icon: <SiPivotaltracker size={34} color="#3572EF" />,
     },
     {
       title: "Images and Videos",
       description:
         "We handle both. Snapshot decodes plates from images. Stream processes live camera or video files.",
       iconColor: "#EF4444",
-      icon: PiVideoCameraFill,
+      icon: <PiVideoCameraFill size={34} color="#EF4444" />,
     },
     {
       title: "Fast and Accurate",
       description:
         "Snapshot’s inference speed is 50-100 ms and Stream processes 5-10 cameras on a mid-range CPU.  No GPU needed!",
       iconColor: "#16A34A",
-      icon: IoIosRocket,
+      icon: <IoIosRocket size={34} color="#16A34A" />,
     },
   ];
   return (
-    <div className="min-w-full">
+    <div className="min-w-full max-h-screen">
       <div className="py-32 flex bg-slate-200 justify-evenly items-center gap-10">
         <div className="flex flex-col mb-2 w-full sm:w-1/2">
           <TypingText
@@ -62,19 +61,13 @@ const Home = () => {
           Our features
         </div>
         <div className="flex justify-evenly items-center font-poppins sm:gap-4">
-          {featureDetails.map((ft) => (
-            <Details
-              key={`features_${ft}`}
-              title={ft.title}
-              description={ft.description}
-              iconColor={ft.iconColor}
-              icon={ft.icon}
-            />
+          {featureDetails.map((feature) => (
+            <Details key={`features_${feature.title}`} detail={feature} />
           ))}
         </div>
       </div>
-      <marquee loop="4" scroolamount="6">
-        <h1 className="text-5xl font-poppins font-bold mt-10 p-8 uppercase text-blue-950/20 tracking-wide">
+      <marquee loop="4" scrollamount="12">
+        <h1 className="text-5xl font-poppins font-bold mt-14 p-8 uppercase text-blue-950/20 tracking-wide">
           Automatic License Number Plate Recognition
         </h1>
       </marquee>

@@ -27,6 +27,7 @@ const Upload = () => {
       }
 
       toast.success("Detected Successfully!");
+      console.log(result);
       navigate("/result", { state: { ...result, file }, replace: true });
     } catch (error) {
       toast.error("Failed to detect. Please try again.");
@@ -49,7 +50,7 @@ const Upload = () => {
   return (
     <div className="flex items-center flex-col">
       <div className="space-y-1 h-40 p-3 flex items-center justify-center flex-col">
-        <h2 className="text-2xl font-bold font-poppins sm:text-4xl text-center text-blue-800 w-1/2">
+        <h2 className="text-2xl font-bold font-poppins sm:text-4xl text-center text-blue-800">
           Upload Media for Number Plate Recognition
         </h2>
         <p className="max-w-full text-center text-slate-600 text-base sm:text-lg">
