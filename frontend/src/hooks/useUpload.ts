@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast/headless";
 
 export function useUpload() {
   const [status, setStatus] = useState({ error: false, loading: false });
@@ -14,9 +15,15 @@ export function useUpload() {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
-      const data: { url: string; path: string } = await response.json();
+      const data: { url: string; path: string; error: boolean } =
+        await response.json();
+
+      if (data.error) {
+        toast.error("Not Detected Number Plate");
+        throw new Error("Error uploading file");
+      }
       return {
         full: `${import.meta.env.VITE_BACKEND_URL}/${data.url}/${data.path}`,
         crop: `${import.meta.env.VITE_BACKEND_URL}/${
