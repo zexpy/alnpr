@@ -45,10 +45,13 @@ const Home = () => {
         </div>
         <div className="w-64">
           <div className="text-xl flex flex-col justify-center items-center h-24 sm:text-2xl px-3 text-white font-bold self-end bg-blue-300 rounded-lg bg-gradient-to-r from-blue-800 ">
-            <Counter
-              targetValue={96}
-              className="text-xl text-center sm:text-2xl mx-1 "
-            />
+            <div>
+              +
+              <Counter
+                targetValue={96}
+                className="text-xl text-center sm:text-2xl mx-1 "
+              />
+            </div>
             DETECTED
           </div>
         </div>
