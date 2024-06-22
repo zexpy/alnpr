@@ -1,55 +1,32 @@
-import { useState } from "react";
-import "./App.css";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import NavBar from "./components/ui/NavBar";
+import About from "./pages/About";
+import Home from "./pages/Home";
+import Result from "./pages/Result";
+import Team from "./pages/Team";
+import Upload from "./pages/Upload";
 
-const URL = "http://localhost:8000/";
-
+function NotFound() {
+  return (
+    <div>
+      <p>404</p>Error finding page
+    </div>
+  );
+}
 const App = () => {
-    const [image, setImage] = useState<{ full: string; crop: string }>();
-    const [file, setFile] = useState<File>();
-    const [loading, setLoading] = useState(false);
-
-    const handleUpload = async () => {
-        try {
-            setLoading(true);
-            const formData = new FormData();
-            formData.append("file", file as Blob);
-            const response = await fetch("http://localhost:8000/uploads", {
-                method: "POST",
-                body: formData,
-            });
-            const data: { url: string; path: string } = await response.json();
-            setImage({
-                full: `${URL}${data.url}/${data.path}`,
-                crop: `${URL}${data.url}/crops/number_plate/${data.path}`,
-            });
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <>
-            <div>
-                <input type="file" onChange={(e) => setFile(e.target?.files?.[0])} />
-                <button onClick={handleUpload}>Upload</button>
-            </div>
-            <h1>{loading && "Loading"}</h1>
-            {image && (
-                <>
-                    <img
-                        src={image.full}
-                        style={{ width: 700, height: 700, objectFit: "contain" }}
-                    />
-                    <img
-                        src={image.crop}
-                        style={{ width: 700, height: 700, objectFit: "contain" }}
-                    />
-                </>
-            )}
-        </>
-    );
+  return (
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/upload" element={<Upload />} />
+        <Route path="/result" element={<Result />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/team" element={<Team />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;
