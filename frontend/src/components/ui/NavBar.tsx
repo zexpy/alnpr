@@ -14,12 +14,12 @@ const NavBar = () => {
         <Link to="/" className="flex items-center">
           <GiTrackedRobot size={40} />
         </Link>
-        <nav className="ml-auto flex items-center gap-4 uppercase">
+        <nav className="ml-auto flex items-center gap-10 uppercase">
           {links.map((link, index) => (
             <Link
               key={`navs_${index}`}
               to={link.path}
-              className="text-base font-normal hover:text-green-800 hover:underline-offset-4 transition duration-500 transform origin-left"
+              className="text-base text-blue-900 font-poppins font-semibold hover:text-green-800 hover:underline-offset-4 transition duration-500 transform origin-left"
             >
               {link.title}
             </Link>
