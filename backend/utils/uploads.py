@@ -19,8 +19,15 @@ async def upload_image(file: UploadFile):
     
     # Use YOLO model to make a prediction and save the results
     res = model.predict(source=img, project='result', name='image', save=True, save_crop=True, conf=0.7)[0]
-    print(res)
-    return {"url": res.save_dir, "path": res.path}
+  
+    if res.boxes is None:
+       return
+
+    if len(res.boxes) == 0:
+        return {"error": True}
+
+    box = res.boxes[0]
+    return {"url": res.save_dir, "path": res.path, "conf": box.conf[0].item(), "cords": box.xyxy[0].tolist()}
     
 
 async def upload_video(file: UploadFile):
