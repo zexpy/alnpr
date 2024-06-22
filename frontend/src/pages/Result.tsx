@@ -29,15 +29,15 @@ function Result() {
         </div>
       </div>
 
-      <div className=" flex flex-row text-2xl w-full border-[1px] rounded mt-6 p-4 justify-between gap-2">
-        <div className="flex-col flex w-full p-2">
-          <span className="border-b-[1px]">Result:</span>
+      <div className=" flex flex-row text-2xl w-full border-[1px] text-blue-900 rounded mt-6 p-4 justify-between gap-2">
+        <div className="flex-col flex w-full p-2  bg-[#F7F9F2] rounded">
+          <span className="border-b-[1px] border-black/40">Result:</span>
           <div className="flex flex-col my-4">
-            <span className="text-sm">Co-ordinate: </span>
-            <span className="text-sm">Confidence: </span>
+            <span className="text-base">Co-ordinate: </span>
+            <span className="text-base mt-8">Confidence: </span>
           </div>
         </div>
-        <img src={crop} className="h-1/2 w-1/2 flex rounded" />
+        <img src={crop} className="h-1/2 w-1/2 flex" />
       </div>
     </div>
   );

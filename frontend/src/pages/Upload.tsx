@@ -6,7 +6,7 @@ import { useUpload } from "../hooks/useUpload";
 import { cn } from "../utils/cn";
 
 const Upload = () => {
-  const { loading, error, file, setFile, handleUpload } = useUpload();
+  const { loading, file, setFile, handleUpload } = useUpload();
   const uploadRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const handleImageUpload = () => {
@@ -29,7 +29,7 @@ const Upload = () => {
   return (
     <div className="flex items-center flex-col">
       <div className="space-y-2 h-40 p-3 flex items-center justify-center flex-col">
-        <h2 className="text-2xl font-bold font-poppins tracking-tight sm:text-4xl text-center">
+        <h2 className="text-2xl font-bold font-poppins sm:text-4xl text-center text-blue-800 w-1/2">
           Upload Media for Number Plate Recognition
         </h2>
         <p className="max-w-full text-center text-slate-600 text-base sm:text-lg">
@@ -37,7 +37,7 @@ const Upload = () => {
           and videos for our number plate recognition system.
         </p>
       </div>
-      <div className="flex w-5/6 flex-col">
+      <div className="flex w-5/6 flex-col mt-4">
         <div
           className="border-2 border-black/25 p-10 w-full border-dashed flex items-center flex-col justify-center gap-y-4"
           onClick={handleImageUpload}
@@ -64,7 +64,7 @@ const Upload = () => {
 
         <button
           onClick={handleDetect}
-          className={cn("p-2 bg-blue-300 rounded my-2 self-end", {
+          className={cn("px-4 py-2 bg-blue-300 rounded my-2 self-end", {
             "text-white bg-gray-500 cursor-not-allowed": loading || !file,
           })}
           disabled={loading || !file}
