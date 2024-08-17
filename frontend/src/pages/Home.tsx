@@ -30,8 +30,8 @@ const Home = () => {
   ];
   return (
     <div className="min-w-full max-h-screen">
-      <div className="py-32 flex bg-slate-200 justify-evenly items-center gap-10">
-        <div className="flex flex-col mb-2 w-full sm:w-1/2">
+      <div className="py-10 md:py-32 flex flex-col md:flex-row bg-slate-200 justify-evenly items-center gap-10 px-4 md:px-10 lg:px-20">
+        <div className="flex flex-col mb-2 w-full md:w-1/2">
           <TypingText
             delay={100}
             className="text-4xl font-bold font-poppins text-blue-900 my-4 sm:text-5xl"
@@ -39,16 +39,16 @@ const Home = () => {
           />
           <p className="text-base text-slate-600 sm:text-lg leading-snug">
             Real-time plate recognition, seamless integration with existing
-            systems, and powerful analytics to optimize operations
+            systems, and powerful analytics to optimize operations.
           </p>
         </div>
-        <div className="w-64">
-          <div className="text-xl flex flex-col justify-center items-center h-24 sm:text-2xl px-3 text-white font-bold self-end bg-blue-300 rounded-lg bg-gradient-to-r from-blue-800 ">
+        <div className="w-full md:w-64">
+          <div className="text-xl flex flex-col justify-center items-center h-24 sm:text-2xl px-3 text-white font-bold self-end bg-blue-300 rounded-lg bg-gradient-to-r from-blue-800">
             <div>
               +
               <Counter
                 targetValue={96}
-                className="text-xl text-center sm:text-2xl mx-1 "
+                className="text-lg text-center sm:text-2xl mx-1"
               />
             </div>
             DETECTED
@@ -56,11 +56,11 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="px-24 mt-10">
-        <div className="text-start ml-24 text-2xl font-poppins font-semibold uppercase text-blue-950/90">
+      <div className="md:px-24 mt-10">
+        <div className="text-center md:text-start md:ml-24 text-2xl font-poppins font-semibold uppercase text-blue-950/90">
           Our features
         </div>
-        <div className="flex justify-evenly items-center font-poppins sm:gap-4">
+        <div className="flex  flex-col md:flex-row justify-evenly items-center font-poppins sm:gap-4">
           {featureDetails.map((feature) => (
             <Details key={`features_${feature.title}`} detail={feature} />
           ))}
