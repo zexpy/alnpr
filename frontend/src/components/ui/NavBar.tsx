@@ -19,7 +19,7 @@ const NavBar = () => {
             <Link
               key={`navs_${index}`}
               to={link.path}
-              className="text-base text-blue-900 font-poppins font-semibold hover:text-green-800  hover:scale-125 transition-all duration-500 transform"
+              className="text-base text-blue-900 font-poppins font-semibold hover:text-blue-600  hover:scale-110 transition-all duration-500 transform"
             >
               {link.title}
             </Link>
