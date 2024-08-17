@@ -1,16 +1,33 @@
 import { useState } from "react";
-import toast from "react-hot-toast/headless";
+import { callAsync } from "../utils/callAsync";
+import { useNavigate } from "react-router-dom";
 
 type ResultResponse = {
-  url: string;
-  path: string;
-  conf: string;
-  cords: string;
-  error: boolean;
+  result: {
+    url: string;
+    path: string;
+    conf: string;
+    cords: string;
+  }[];
 };
 export function useUpload() {
   const [status, setStatus] = useState({ error: false, loading: false });
   const [file, setFile] = useState<File>();
+  const navigate = useNavigate();
+  const [data, setData] = useState<ResultResponse | null>(null);
+
+  const handleDownload = async (downloadUrl?: string) => {
+    if (!downloadUrl) {
+      return;
+    }
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = file?.name ?? "";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    navigate("/", { replace: true });
+  };
 
   const handleUpload = async () => {
     try {
@@ -25,24 +42,42 @@ export function useUpload() {
         },
       );
       const data: ResultResponse = await response.json();
-
-      if (data.error) {
-        toast.error("Not Detected Number Plate");
-        throw new Error("Error uploading file");
-      }
-      return {
-        full: `${import.meta.env.VITE_BACKEND_URL}/${data.url}/${data.path}`,
-        crop: `${import.meta.env.VITE_BACKEND_URL}/${
-          data.url
-        }/crops/number_plate/${data.path}`,
-        conf: data.conf,
-        cords: data.cords,
-      };
+      return data;
     } catch (error) {
       setStatus((prev) => ({ ...prev, error: true }));
     } finally {
       setStatus((prev) => ({ ...prev, loading: false }));
     }
   };
-  return { ...status, file, handleUpload, setFile };
+
+  const handleDetect = async () => {
+    const [data, error] = await callAsync(handleUpload());
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+    if (!data) {
+      return;
+    }
+    if (file?.type.split("/")[0] === "image") {
+      return;
+    }
+    const result = data.result.map((d) => ({
+      ...d,
+      full: `${import.meta.env.VITE_BACKEND_URL}/${d.url}/${d.path}`,
+      crop: `${import.meta.env.VITE_BACKEND_URL}/${
+        d.url
+      }/crops/number_plate/${d.path}`,
+    }));
+    console.log(result);
+  };
+
+  return {
+    ...status,
+    file,
+    handleUpload,
+    setFile,
+    handleDownload,
+    handleDetect,
+  };
 }

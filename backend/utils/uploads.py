@@ -27,7 +27,13 @@ async def upload_image(file: UploadFile):
         return {"error": True}
 
     box = res.boxes[0]
-    return {"url": res.save_dir, "path": res.path, "conf": box.conf[0].item(), "cords": box.xyxy[0].tolist()}
+    result = [{
+        "url": res.save_dir,
+        "path": res.path,
+        "conf": box.conf[0].item(),
+        "cords": box.xyxy[0].tolist()
+    }]
+    return {"result": result}
     
 
 async def upload_video(file: UploadFile):
@@ -44,5 +50,41 @@ async def upload_video(file: UploadFile):
     print('Removed the video also')
     video_path = res.path.split('/')[-1].replace('.mp4', '.avi')
     return {"url": res.save_dir, "path": video_path}
+
+
+
+async def upload_video_by_frame(file: UploadFile):
+    temp_filename = f"temp_{uuid.uuid4()}.mp4"
+    with open(temp_filename, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    cntr, frame_cut = 0, 10
+    cap = cv2.VideoCapture(temp_filename)
+    results = []
+
+    while True:
+        ret, frame = cap.read()
+        cntr += 1
+        if not ret:
+            break
+        # Processing every frame
+        if((cntr%frame_cut) == 0):
+            res = model.predict(source=frame, project='result', name=f'frame_{cntr}', save=True, save_crop=True, conf=0.7)[0]
+            
+            # Check if result contains boxes and that the box has a length of 4
+            if res.boxes is not None and len(res.boxes) > 0:
+                box = res.boxes[0]
+                if len(box.xyxy[0].tolist()) == 4:
+                    results.append({
+                        "url": res.save_dir,
+                        "path": res.path,
+                        "conf": box.conf[0].item(),
+                        "cords": box.xyxy[0].tolist()
+                    })
+
+    cap.release()
+    os.remove(temp_filename)
+    
+    return {"result": results}
 
 
