@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { callAsync } from "../utils/callAsync";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 type ResultResponse = {
   result: {
@@ -14,7 +15,6 @@ export function useUpload() {
   const [status, setStatus] = useState({ error: false, loading: false });
   const [file, setFile] = useState<File>();
   const navigate = useNavigate();
-  const [data, setData] = useState<ResultResponse | null>(null);
 
   const handleDownload = async (downloadUrl?: string) => {
     if (!downloadUrl) {
@@ -59,9 +59,6 @@ export function useUpload() {
     if (!data) {
       return;
     }
-    if (file?.type.split("/")[0] === "image") {
-      return;
-    }
     const result = data.result.map((d) => ({
       ...d,
       full: `${import.meta.env.VITE_BACKEND_URL}/${d.url}/${d.path}`,
@@ -69,6 +66,11 @@ export function useUpload() {
         d.url
       }/crops/number_plate/${d.path}`,
     }));
+    if (file?.type.split("/")[0] === "image") {
+      toast.success("Detection successful");
+      navigate("/result", { state: { ...result[0], file } });
+      return;
+    }
     console.log(result);
   };
 
