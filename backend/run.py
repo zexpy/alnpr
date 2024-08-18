@@ -1,16 +1,19 @@
 from fastapi import FastAPI, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from utils.uploads import upload_image, upload_video
+from utils.uploads import upload_image, upload_video_by_frame
 
 
 app = FastAPI()
 
 app.mount('/result', StaticFiles(directory='result'), 'result')
 
+origins = [
+    "http://localhost:5173"
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,7 +29,8 @@ async def create_check(file: UploadFile, _: Request):
     if path == 'image':
         return await upload_image(file)
     else:
-        return await upload_video(file)
+        # return await upload_video(file)
+        return await upload_video_by_frame(file)
 
 
 

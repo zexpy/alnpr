@@ -1,53 +1,14 @@
 import { useRef, useState } from "react";
-import toast from "react-hot-toast";
 import { BsUpload } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import { useUpload } from "../hooks/useUpload";
 import { cn } from "../utils/cn";
 
 const Upload = () => {
-  const { loading, file, setFile, handleUpload } = useUpload();
+  const { loading, file, setFile, handleUpload, handleDownload, handleDetect } =
+    useUpload();
   const uploadRef = useRef<HTMLInputElement>(null);
   const [downloadUrl, setDownloadUrl] = useState<string>();
-  const navigate = useNavigate();
-
-  const handleImageUpload = () => {
-    uploadRef.current?.click();
-  };
-
-  const handleDetect = async () => {
-    try {
-      const result = await handleUpload();
-      if (!result) {
-        return toast.error("Failed to detect. Please try again.");
-      }
-      if (file?.type.split("/")[0] === "video") {
-        setDownloadUrl(result.full);
-        toast.success("Video Detected Successfully!");
-        return;
-      }
-
-      toast.success("Detected Successfully!");
-      console.log(result);
-      navigate("/result", { state: { ...result, file }, replace: true });
-    } catch (error) {
-      toast.error("Failed to detect. Please try again.");
-    }
-  };
-
-  const handleDownload = async () => {
-    if (!downloadUrl) {
-      return;
-    }
-    const link = document.createElement("a");
-    link.href = downloadUrl;
-    link.download = file?.name ?? "";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    navigate("/", { replace: true });
-  };
 
   return (
     <div className="flex flex-col items-center p-4 md:p-8 lg:p-12">
@@ -63,7 +24,7 @@ const Upload = () => {
       <div className="flex flex-col w-full md:w-5/6 lg:w-4/6 mt-4 md:mt-6 lg:mt-8">
         <div
           className="border-2 border-black/25 p-6 md:p-10 w-full border-dashed flex flex-col items-center justify-center gap-y-4 cursor-pointer"
-          onClick={handleImageUpload}
+          onClick={() => uploadRef.current?.click()}
         >
           {file ? (
             file.type.split("/")[0] !== "video" ? (
@@ -93,7 +54,7 @@ const Upload = () => {
         <div className="self-end flex gap-5 my-2">
           {downloadUrl && (
             <button
-              onClick={handleDownload}
+              onClick={() => handleDownload(downloadUrl)}
               className="px-4 py-2 bg-blue-300 rounded my-2"
             >
               Download Video
