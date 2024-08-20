@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from utils.uploads import upload_image, upload_video_by_frame
+from utils.cnn import get_character
+from pydantic import BaseModel
 
 
 app = FastAPI()
@@ -32,7 +34,14 @@ async def create_check(file: UploadFile, _: Request):
         # return await upload_video(file)
         return await upload_video_by_frame(file)
 
+class ImageRequest(BaseModel):
+    image: str
 
+
+@app.post("/recog")
+async def recognize_character(request: ImageRequest):
+    image_str = request.image
+    return {"text": image_str}
 
 
 

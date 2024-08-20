@@ -15,7 +15,23 @@ function Result() {
     return <Navigate to="/" replace={true} />;
   }
   const { full, crop, file, conf, cords } = state as ResultData;
-  console.log(state);
+
+  console.log(crop)
+
+  const handleRecognized = async (image: string) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/recog`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    const data = await response.json() as {text: string}
+    console.log(data.text)
+  }
   return (
     <div className="flex h-full max-w-7xl flex-col font-poppins items-center justify-center m-auto px-8 gap-3">
       <div className="flex flex-row justify-center gap-1 items-center rounded-md mt-12">
@@ -49,9 +65,14 @@ function Result() {
         </div>
         <img src={crop} className="h-full w-full flex-2" />
       </div>
-      <button className="px-4 py-2 bg-blue-300 rounded self-end">
-        Detect Another
-      </button>
+      <div className="flex gap-5">
+        <button className="px-4 py-2 bg-blue-300 rounded self-end" onClick={() => handleRecognized(crop)}>
+          Recognize Number Plate
+        </button>
+        <button className="px-4 py-2 bg-blue-300 rounded self-end">
+          Detect Another
+        </button>
+      </div>
     </div>
   );
 }
