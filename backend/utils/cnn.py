@@ -1,28 +1,34 @@
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-import requests
+import os
+import functools
 
-def read_image_from_url(url):
-    # Fetch the image from the URL
-    response = requests.get(url)
-    # Convert the image data to a NumPy array
-    image_array = np.frombuffer(response.content, dtype=np.uint8)
-    # Decode the image data to get an OpenCV image
-    image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-    return image
-
+def compare(rect1, rect2):
+    if abs(rect1[1] - rect2[1]) > 10:
+        return rect1[1] - rect2[1]
+    else:
+        return rect1[0] - rect2[0]
 
 def preprocess_character(character_image):
     resized_image = cv2.resize(character_image, (60, 60))
     normalized_image = resized_image.astype("float32") / 255.0
+    cv2.imshow("preprocessed", normalized_image)
+    cv2.waitKey(0)
     expanded_image = np.expand_dims(normalized_image, axis=-1)  # Add channel dimension
     expanded_image = np.expand_dims(expanded_image, axis=0)  # Add batch dimension
     return expanded_image
 
-async def get_character(img, type='image'):
-    image = read_image_from_url(img)
-    image_file = cv2.imread(img)
+async def get_character(image_path, type='image'):
+    full_image_path = "./result" + image_path
+    # Check if the file exists
+    if not os.path.exists(full_image_path):
+        raise FileNotFoundError(f"The image file at {full_image_path} does not exist.")
+    
+    # Read the image from the local path
+    image_file = cv2.imread(full_image_path)
+    
+    # Convert image to grayscale
     gray = cv2.cvtColor(image_file, cv2.COLOR_BGR2GRAY)
 
     # Apply binary thresholding to get a binary image
@@ -33,27 +39,31 @@ async def get_character(img, type='image'):
     (numLabels, labels, stats, centroids) = output
 
     # Load the model
-    model = load_model('recognition.keras')
+    model = load_model('./utils/modal.keras')
 
     # Mapping from predicted label index to character
     label_to_char = {
-        0: '0',
-        1: '1',
-        2: '2',
-        3: '3',
-        4: '4',
-        5: '5',
-        6: '6',
-        7: '7',
-        8: '8',
-        9: '9',
-        10: 'ba',
-        11: 'ga',
-        12: 'pa'
+        0: 0,
+        1: 1,
+        2: 2,
+        3: 3,
+        4: 4,
+        5: 5,
+        6: 6,
+        7: 7,
+        8: 8,
+        9: 9,
+        10: "Ba",
+        11: "Ga",
+        12: "Kha",
+        13: "Lu",
+        14: "Na",
+        15: "Pa"
     }
 
     final_text = ""
-    
+    components = []
+
     # Iterate through each component found
     for i in range(1, numLabels):  # Start from 1 to skip the background
         x = stats[i, cv2.CC_STAT_LEFT]
@@ -63,8 +73,8 @@ async def get_character(img, type='image'):
         area = stats[i, cv2.CC_STAT_AREA]
 
         if type == "image":
-            keepWidth = lambda w: 40 < w < 200
-            keepHeight = lambda h: 50 < h < 170
+            keepWidth = lambda w: 70 < w < 200
+            keepHeight = lambda h: 70 < h < 170
             keepArea = lambda area: area > 1500
         else:  # If it's a video
             keepWidth = lambda w: 10 < w < 50        
@@ -73,17 +83,26 @@ async def get_character(img, type='image'):
 
         # Filter out components based on width, height, and area
         if all([keepWidth(w), keepHeight(h), keepArea(area)]):
+            print(x,y,w,h, area)
             # Extract the character ROI
             character = image_file[y:y+h, x:x+w]
+            # Store the component with its centroid, stats, and character image
+            components.append((x, y, w, h, character))
+    
+    components = sorted(components, key=functools.cmp_to_key(compare))
 
-            # Preprocess the character image using the concept from preprocess_image
-            preprocessed_character = preprocess_character(character)
+    # Iterate through sorted components
+    for x, y, w, h, character in components:
+        # Preprocess the character image using the concept from preprocess_image
+        preprocessed_character = preprocess_character(character)
 
-            # Predict the character using the model
-            prediction = model.predict(preprocessed_character)
-            predicted_label = np.argmax(prediction, axis=1)[0]
-            predicted_char = label_to_char[predicted_label]
-            final_text += str(predicted_char)
+        # Predict the character using the model
+        prediction = model.predict(preprocessed_character)
+        predicted_label = np.argmax(prediction, axis=1)[0]
+        predicted_char = label_to_char[predicted_label]
+        print(predicted_label, predicted_char)
+        final_text += str(predicted_char)
 
     return {"text": final_text}
 
+cv2.destroyAllWindows()
