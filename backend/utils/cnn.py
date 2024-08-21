@@ -8,24 +8,24 @@ def compare(rect1, rect2):
     if abs(rect1[1] - rect2[1]) > 10:
         return rect1[1] - rect2[1]
     else:
+    
         return rect1[0] - rect2[0]
 
 def preprocess_character(character_image):
     resized_image = cv2.resize(character_image, (60, 60))
     normalized_image = resized_image.astype("float32") / 255.0
-    cv2.imshow("preprocessed", normalized_image)
-    cv2.waitKey(0)
     expanded_image = np.expand_dims(normalized_image, axis=-1)  # Add channel dimension
     expanded_image = np.expand_dims(expanded_image, axis=0)  # Add batch dimension
     return expanded_image
 
-async def get_character(image_path, type='image'):
-    full_image_path = "./result" + image_path
+async def get_character(image_path, type):
+    # Use os.path.abspath to get the absolute path
+    full_image_path = os.path.abspath(os.path.join("result", image_path.lstrip("/")))
     # Check if the file exists
     if not os.path.exists(full_image_path):
         raise FileNotFoundError(f"The image file at {full_image_path} does not exist.")
     
-    # Read the image from the local path
+    # Read the image from the absolute path
     image_file = cv2.imread(full_image_path)
     
     # Convert image to grayscale
@@ -38,8 +38,9 @@ async def get_character(image_path, type='image'):
     output = cv2.connectedComponentsWithStats(thresh, 4, cv2.CV_32S)
     (numLabels, labels, stats, centroids) = output
 
-    # Load the model
-    model = load_model('./utils/modal.keras')
+    # Load the model using an absolute path
+    model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'modal.keras'))
+    model = load_model(model_path)
 
     # Mapping from predicted label index to character
     label_to_char = {
@@ -73,8 +74,8 @@ async def get_character(image_path, type='image'):
         area = stats[i, cv2.CC_STAT_AREA]
 
         if type == "image":
-            keepWidth = lambda w: 70 < w < 200
-            keepHeight = lambda h: 70 < h < 170
+            keepWidth = lambda w: 40 < w < 200
+            keepHeight = lambda h: 50 < h < 170
             keepArea = lambda area: area > 1500
         else:  # If it's a video
             keepWidth = lambda w: 10 < w < 50        

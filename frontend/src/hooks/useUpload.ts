@@ -69,9 +69,10 @@ export function useUpload() {
     if (file?.type.split("/")[0] === "image") {
       toast.success("Detection successful");
       navigate("/result", { state: { ...result[0], file } });
-      return;
+    } else {
+      toast.success("Video detection successful");
+      navigate("/video-result", { state: result });
     }
-    console.log(result);
   };
 
   return {

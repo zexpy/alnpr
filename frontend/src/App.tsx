@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Result from "./pages/Result";
 import Team from "./pages/Team";
 import Upload from "./pages/Upload";
+import VideoResult from "./pages/VideoResult";
 
 function NotFound() {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/team" element={<Team />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/video-result" element={<VideoResult />} />
       </Routes>
     </Router>
   );

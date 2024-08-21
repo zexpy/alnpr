@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Navigate, useLocation } from "react-router-dom";
 import { cn } from "../utils/cn";
+import { LuLoader2 } from "react-icons/lu";
 
 export type ResultData = {
     full: string;
@@ -13,6 +14,7 @@ export type ResultData = {
 function Result() {
     const { state } = useLocation();
     const [character, setCharacter] = useState<string>('')
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Add this line
     if (!state) {
         toast.error("Invalid");
         return <Navigate to="/" replace={true} />;
@@ -20,19 +22,32 @@ function Result() {
     const { full, crop, file, conf, cords } = state as ResultData;
 
     const handleRecognized = async (image: string) => {
-        const formData = new FormData();
-        formData.append("image", image);
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/character/recognition`,
-            {
-                method: "POST",
-                body: JSON.stringify({ image: image.split('/result')[1] }),
-            },
-        );
+        setIsLoading(true); // Add this line
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_BACKEND_URL}/character/recognition`,
+                {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ image: image.split('/result')[1], type: 'image' }),
+                },
+            );
 
-        const data = (await response.json()) as { text: string };
-        toast.success("Successfully recognized the character")
-        setCharacter(data.text)
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json() as { text: string };
+            toast.success("Successfully recognized the character");
+            setCharacter(data.text);
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error("Failed to recognize the character");
+        } finally {
+            setIsLoading(false); // Add this line
+        }
     };
     return (
         <div className="flex h-full max-w-7xl flex-col font-poppins items-center justify-center m-auto px-8 gap-3">
@@ -74,10 +89,18 @@ function Result() {
             </div>
             <div className="flex gap-5">
                 <button
-                    className="px-4 py-2 bg-blue-300 rounded self-end"
+                    className="px-4 py-2 bg-blue-300 rounded self-end flex items-center"
                     onClick={() => handleRecognized(crop)}
+                    disabled={isLoading} // Add this line
                 >
-                    Recognize Number Plate
+                    {isLoading ? (
+                        <>
+                            <LuLoader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Recognizing...
+                        </>
+                    ) : (
+                        "Recognize Number Plate"
+                    )}
                 </button>
                 <button className="px-4 py-2 bg-blue-300 rounded self-end">
                     Detect Another

@@ -41,7 +41,8 @@ class ImageRequest(BaseModel):
 async def recognize_character(request: Request):
     data = await request.json()
     image = data['image']
-    return await get_character(image)
+    type = data['type']
+    return await get_character(image, type)
 
 
 
