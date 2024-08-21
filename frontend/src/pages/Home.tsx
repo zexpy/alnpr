@@ -4,6 +4,7 @@ import { SiPivotaltracker } from "react-icons/si";
 import Details from "../components/Details";
 import Counter from "../components/ui/animata/text/counter";
 import TypingText from "../components/ui/animata/text/TypingText";
+import { useState, useEffect } from "react";
 
 const Home = () => {
   const featureDetails = [
@@ -23,11 +24,28 @@ const Home = () => {
     {
       title: "Fast and Accurate",
       description:
-        "Snapshot’s inference speed is 50-100 ms and Stream processes 5-10 cameras on a mid-range CPU.  No GPU needed!",
+        "Snapshot's inference speed is 50-100 ms and Stream processes 5-10 cameras on a mid-range CPU.  No GPU needed!",
       iconColor: "#16A34A",
       icon: <IoIosRocket size={34} color="#16A34A" />,
     },
   ];
+  const [stats, setStats] = useState({ detections: 0, recognitions: 0 });
+  console.log(stats)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/stats`);
+        const data = await response.json();
+        setStats(data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <div className="min-w-full max-h-screen">
       <div className="py-10 md:py-32 flex flex-col md:flex-row bg-slate-200 justify-evenly items-center gap-10 px-4 md:px-10 lg:px-20">
@@ -43,15 +61,27 @@ const Home = () => {
           </p>
         </div>
         <div className="w-full md:w-64">
-          <div className="text-xl flex flex-col justify-center items-center h-24 sm:text-2xl px-3 text-white font-bold self-end bg-blue-300 rounded-lg bg-gradient-to-r from-blue-800">
-            <div>
-              +
-              <Counter
-                targetValue={96}
-                className="text-lg text-center sm:text-2xl mx-1"
-              />
+          <div className="text-xl flex flex-col justify-center items-center h-32 sm:text-2xl px-3 text-white font-bold self-end bg-blue-300 rounded-lg bg-gradient-to-r from-blue-800">
+            <div className="flex flex-col items-center">
+              <div className="flex items-center">
+                +
+                <Counter
+                  targetValue={stats.detections}
+                  className="text-lg text-center sm:text-2xl mx-1"
+                />
+              </div>
+              <div>DETECTED</div>
             </div>
-            DETECTED
+            <div className="flex flex-col items-center mt-2">
+              <div className="flex items-center">
+                +
+                <Counter
+                  targetValue={stats.recognitions}
+                  className="text-lg text-center sm:text-2xl mx-1"
+                />
+              </div>
+              <div>RECOGNIZED</div>
+            </div>
           </div>
         </div>
       </div>
@@ -66,11 +96,11 @@ const Home = () => {
           ))}
         </div>
       </div>
-      <marquee loop="4" scrollamount="12">
-        <h1 className="text-5xl font-poppins font-bold mt-14 p-8 uppercase text-blue-950/20 tracking-wide">
+      <div className="overflow-hidden">
+        <h1 className="text-5xl font-poppins font-bold mt-14 p-8 uppercase text-blue-950/20 tracking-wide whitespace-nowrap animate-marquee">
           Automatic License Number Plate Recognition
         </h1>
-      </marquee>
+      </div>
     </div>
   );
 };
