@@ -8,11 +8,13 @@ def compare(rect1, rect2):
     if abs(rect1[1] - rect2[1]) > 10:
         return rect1[1] - rect2[1]
     else:
-    
         return rect1[0] - rect2[0]
 
 def preprocess_character(character_image):
     resized_image = cv2.resize(character_image, (60, 60))
+    # cv2.imshow('ok', resized_image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
     normalized_image = resized_image.astype("float32") / 255.0
     expanded_image = np.expand_dims(normalized_image, axis=-1)  # Add channel dimension
     expanded_image = np.expand_dims(expanded_image, axis=0)  # Add batch dimension
@@ -74,9 +76,9 @@ async def get_character(image_path, type):
         area = stats[i, cv2.CC_STAT_AREA]
 
         if type == "image":
-            keepWidth = lambda w: 40 < w < 200
-            keepHeight = lambda h: 50 < h < 170
-            keepArea = lambda area: area > 1500
+            keepWidth = lambda w: 15 < w < 200
+            keepHeight = lambda h: 60 < h < 170
+            keepArea = lambda area: area > 600
         else:  # If it's a video
             keepWidth = lambda w: 10 < w < 50        
             keepHeight = lambda h: 10 < h < 40       
@@ -84,16 +86,15 @@ async def get_character(image_path, type):
 
         # Filter out components based on width, height, and area
         if all([keepWidth(w), keepHeight(h), keepArea(area)]):
-            print(x,y,w,h, area)
             # Extract the character ROI
             character = image_file[y:y+h, x:x+w]
             # Store the component with its centroid, stats, and character image
-            components.append((x, y, w, h, character))
+            components.append((x, y, w, h, character, area))
     
     components = sorted(components, key=functools.cmp_to_key(compare))
 
     # Iterate through sorted components
-    for x, y, w, h, character in components:
+    for x, y, w, h, character, area in components:
         # Preprocess the character image using the concept from preprocess_image
         preprocessed_character = preprocess_character(character)
 
@@ -101,9 +102,8 @@ async def get_character(image_path, type):
         prediction = model.predict(preprocessed_character)
         predicted_label = np.argmax(prediction, axis=1)[0]
         predicted_char = label_to_char[predicted_label]
-        print(predicted_label, predicted_char)
+        print("x: {}, y: {}, w: {}, h: {}, area: {}, predicted_char: {}".format(x, y, w, h, area, predicted_char))
         final_text += str(predicted_char)
 
     return {"text": final_text}
 
-cv2.destroyAllWindows()

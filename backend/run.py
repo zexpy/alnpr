@@ -38,7 +38,8 @@ async def create_check(file: UploadFile, _: Request):
     if result and not result.get("error"):
         conn = create_connection()
         increment_detections(conn)
-        conn.close()
+        if conn:
+            conn.close()
     
     return result
 
@@ -55,7 +56,8 @@ async def recognize_character(request: Request):
     
     conn = create_connection()
     increment_recognitions(conn)
-    conn.close()
+    if conn:
+        conn.close()
     
     return result
 
@@ -63,5 +65,6 @@ async def recognize_character(request: Request):
 async def get_detection_stats():
     conn = create_connection()
     stats = get_stats(conn)
-    conn.close()
+    if conn: 
+        conn.close()
     return {"detections": stats[0], "recognitions": stats[1]}

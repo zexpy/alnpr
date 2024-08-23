@@ -47,6 +47,8 @@ final_text = ""
 
 def preprocess_character(character_image):
     resized_image = cv2.resize(character_image, (60, 60))
+    cv2.imshow('ok', resized_image)
+    cv2.waitKey(0)
     normalized_image = resized_image.astype("float32") / 255.0
     expanded_image = np.expand_dims(normalized_image, axis=-1)  # Add channel dimension
     expanded_image = np.expand_dims(expanded_image, axis=0)  # Add batch dimension
@@ -77,7 +79,7 @@ for i in range(1, numLabels):  # Start from 1 to skip the background
         # Extract the character ROI
         character = image_file[y:y+h, x:x+w]
         # Store the component with its centroid, stats, and character image
-        components.append((x, y, w, h, character))
+        components.append((x, y, w, h, character, area))
 
 # Sorting logic similar to the first code
 def compare(rect1, rect2):
@@ -89,7 +91,7 @@ def compare(rect1, rect2):
 components = sorted(components, key=functools.cmp_to_key(compare))
 
 # Iterate through sorted components
-for x, y, w, h, character in components:
+for x, y, w, h, character, area in components:
     # Preprocess the character image using the concept from preprocess_image
     preprocessed_character = preprocess_character(character)
 
@@ -97,7 +99,8 @@ for x, y, w, h, character in components:
     prediction = model.predict(preprocessed_character)
     predicted_label = np.argmax(prediction, axis=1)[0]
     predicted_char = label_to_char[predicted_label]
-    print(x,y, predicted_char)
+    print("x: {}, y: {}, w: {}, h: {}, area: {}, predicted_char: {}".format(x, y, w, h, area, predicted_char))
     final_text += str(predicted_char)
 
 print(final_text)
+cv2.destroyAllWindows()
