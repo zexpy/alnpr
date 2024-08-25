@@ -1,10 +1,10 @@
+import { useEffect, useState } from "react";
 import { IoIosRocket } from "react-icons/io";
 import { PiVideoCameraFill } from "react-icons/pi";
 import { SiPivotaltracker } from "react-icons/si";
 import Details from "../components/Details";
 import Counter from "../components/ui/animata/text/counter";
 import TypingText from "../components/ui/animata/text/TypingText";
-import { useState, useEffect } from "react";
 
 const Home = () => {
   const featureDetails = [
@@ -30,7 +30,6 @@ const Home = () => {
     },
   ];
   const [stats, setStats] = useState({ detections: 0, recognitions: 0 });
-  console.log(stats)
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -60,9 +59,9 @@ const Home = () => {
             systems, and powerful analytics to optimize operations.
           </p>
         </div>
-        <div className="w-full md:w-64">
-          <div className="text-xl flex flex-col justify-center items-center h-32 sm:text-2xl px-3 text-white font-bold self-end bg-blue-300 rounded-lg bg-gradient-to-r from-blue-800">
-            <div className="flex flex-col items-center">
+        <div className="w-full md:w-64 space-y-6">
+          <div className="text-xl flex  justify-center items-center h-16 sm:text-2xl px-4 font-bold self-end rounded-lg border-b-2 border-green-900 text-blue-900">
+            <div className="flex items-center">
               <div className="flex items-center">
                 +
                 <Counter
@@ -72,7 +71,9 @@ const Home = () => {
               </div>
               <div>DETECTED</div>
             </div>
-            <div className="flex flex-col items-center mt-2">
+          </div>
+          <div className="text-xl flex  justify-center items-center h-16 sm:text-2xl px-4 font-bold self-end rounded-lg border-t-2 border-green-900 text-blue-900">
+            <div className="flex items-center mt-2">
               <div className="flex items-center">
                 +
                 <Counter

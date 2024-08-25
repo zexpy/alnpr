@@ -80,9 +80,9 @@ function VideoResult() {
                             Result:
                         </span>
                         <div className="flex flex-col gap-3 my-3">
-                            <div className="text-base font-semibold">
+                            {/* <div className="text-base font-semibold">
                                 Confidence: {Number(results[selectedIndex].conf).toFixed(3)}
-                            </div>
+                            </div> */}
                             <div className="text-base font-semibold">
                                 Co-ordinate: ({results[selectedIndex].cords.map((cord) => cord.toFixed(2)).join(", ")})
                             </div>

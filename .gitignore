@@ -6,3 +6,4 @@ backend/result
 .ipynb_checkpoints/
 datas/*
 datasets/*
+character_ocr/*

@@ -41,6 +41,10 @@ export function useUpload() {
                     body: formData,
                 },
             );
+            if(!response.ok){
+                toast.error("No Detection");    
+                return;
+            }
             const data: ResultResponse = await response.json();
             return data;
         } catch (error) {
@@ -53,7 +57,7 @@ export function useUpload() {
     const handleDetect = async () => {
         const [data, error] = await callAsync(handleUpload());
         if (error) {
-            console.log(error.message);
+            toast.error("Failed to detect the number plate");
             return;
         }
         if (!data) {

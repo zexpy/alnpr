@@ -1,4 +1,4 @@
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
 import cv2
 import numpy as np
 import uuid
@@ -24,7 +24,9 @@ async def upload_image(file: UploadFile):
        return
 
     if len(res.boxes) == 0:
-        return {"error": True}
+        raise HTTPException(status_code=400, detail="Images not detected")
+
+    box = res.boxes[0]
 
     box = res.boxes[0]
     result = [{

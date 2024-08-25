@@ -1,6 +1,0 @@
-path: /home/zephyr/Desktop/.code/college/alnpr/datasets/data
-train: images
-val: images
-
-names:
-  0: number_plate
